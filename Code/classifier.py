@@ -7,6 +7,8 @@ from sklearn.model_selection import train_test_split
 from sklearn import metrics
 from imblearn.over_sampling import SMOTE
 
+from pretrained_regression import PretrainedRegression
+
 # Plotting libraries and setup
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -31,6 +33,9 @@ Framework:
 # Enable/disable oversampling with SMOTE to get a balanced training set
 OVERSAMPLE = False
 
+# Fit own model with sklearn instead of using precalculated weights
+FIT_NEW_MODEL = False
+
 if __name__ == "__main__":
     tweet_data = pd.read_csv('../Data/Twitter/CleanedCyberBullyingTweets_LIWC2007.csv')
 
@@ -46,8 +51,7 @@ if __name__ == "__main__":
     """
 
     # We keep only the columns that the article mentions as the ones we use
-    keep_only_columns = ['you', 'anger', 'negemo', 'anger', 'bio', 'body', 'health', 'ingest', 'death', 'swear',
-                        'class']
+    keep_only_columns = ['you', 'anger', 'negemo', 'anger', 'bio', 'body', 'health', 'ingest', 'death', 'swear', 'sexual', 'class']
     tweet_data = tweet_data[keep_only_columns]
 
     X = tweet_data.drop(columns=['class'])
@@ -79,12 +83,23 @@ if __name__ == "__main__":
     X_test = X_test.values
     y_test = y_test['class'].values
 
-    logreg = LogisticRegression()
-    logreg.fit(X_train, y_train)
+    if FIT_NEW_MODEL:
+        logreg = LogisticRegression()
+        logreg.fit(X_train, y_train)
 
-    y_pred = logreg.predict(X_test)
-    print('Accuracy of LogRegression on the test set: ', logreg.score(X_test, y_test))
+        y_pred = logreg.predict(X_test)
 
-    print("----Confusion matrix----")
-    confusion_matrix = metrics.confusion_matrix(y_test, y_pred)
-    print(confusion_matrix)
+        print('Accuracy of LogRegression on the test set: ', logreg.score(X_test, y_test))
+
+        print("----Confusion matrix----")
+        confusion_matrix = metrics.confusion_matrix(y_test, y_pred)
+        print(confusion_matrix)
+
+    else:
+        pr = PretrainedRegression()
+        y_pred = pr.predict(X_test)
+        print('Accuracy of LogRegression on the test set: ', pr.score(X_test, y_test))
+
+        print("----Confusion matrix----")
+        confusion_matrix = metrics.confusion_matrix(y_test, y_pred)
+        print(confusion_matrix)
