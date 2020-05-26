@@ -57,10 +57,14 @@ for bad_word in BAD_WORDS_CORPUS:
     probabilities.append([bad_word, probability])
 
 our_probabilities_df = pd.DataFrame(probabilities, columns = ['bad_word', 'probability'])
+our_probabilities_df['authors'] = 'Us (small Kasture dataset)'
 their_probabilities_df = pd.DataFrame(THEIR_CYBERBULLYING_PROBABILITY_VALUES, columns = ['bad_word', 'probability'])
+their_probabilities_df['authors'] = 'Authors (big dataset)'
 
-sns.lineplot(data=our_probabilities_df, x='bad_word', y='probability', color='coral', sort=False, label='Kasture')
-prob_plot = sns.lineplot(data=their_probabilities_df, x='bad_word', y='probability', color='blue', sort=False, label='Ho et al.')
-prob_plot.set(xlabel='Bad word', ylabel='Probability of cyberbullying',)
+final_df = pd.concat([our_probabilities_df, their_probabilities_df])
+sns.set(rc={'figure.figsize':(11.7,8.27)})
+prob_plot = sns.barplot(data=final_df, x='bad_word', y='probability', hue='authors')
+prob_plot.set(xlabel='Bad word', ylabel='Probability of cyberbullying')
+plt.savefig('../Article/Images/ProbabilityPerWord-BarPlot.pdf')
 plt.show()
 
