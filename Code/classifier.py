@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 from sklearn import preprocessing
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
 from imblearn.over_sampling import SMOTE
@@ -14,6 +16,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set(style='white')
 sns.set(style='whitegrid', color_codes=True)
+
+CLASSIFIER_LOGISTIC_REGRESSION = 'LogisticRegression'
+CLASSIFIER_SVM = 'SVM'
+CLASSIFIER_RF = 'RandomForest'
 
 """
 We implement a basic logistic regression classifier to distinguish tweets
@@ -34,7 +40,13 @@ Framework:
 OVERSAMPLE = False
 
 # Fit own model with sklearn instead of using precalculated weights
-FIT_NEW_MODEL = False
+FIT_NEW_MODEL = True
+
+# Choose desired classification approach by uncommenting the lines below
+CLASSIFIER_TYPE = CLASSIFIER_LOGISTIC_REGRESSION
+# CLASSIFIER_TYPE = CLASSIFIER_SVM
+# CLASSIFIER_TYPE = CLASSIFIER_RF
+
 
 if __name__ == "__main__":
     tweet_data = pd.read_csv('../Data/Twitter/CleanedCyberBullyingTweets_LIWC2007.csv')
@@ -84,12 +96,20 @@ if __name__ == "__main__":
     y_test = y_test['class'].values
 
     if FIT_NEW_MODEL:
-        logreg = LogisticRegression()
-        logreg.fit(X_train, y_train)
+        if CLASSIFIER_TYPE == CLASSIFIER_LOGISTIC_REGRESSION:
+            model = LogisticRegression()
 
-        y_pred = logreg.predict(X_test)
+        elif CLASSIFIER_TYPE == CLASSIFIER_SVM:
+            model = LinearSVC(max_iter=100000)
 
-        print('Accuracy of LogRegression on the test set: ', logreg.score(X_test, y_test))
+        elif CLASSIFIER_TYPE == CLASSIFIER_RF:
+            model = RandomForestClassifier()
+
+        model.fit(X_train, y_train)
+
+        y_pred = model.predict(X_test)
+
+        print(f'Accuracy of {CLASSIFIER_TYPE} on the test set: ', model.score(X_test, y_test))
 
         print("----Confusion matrix----")
         confusion_matrix = metrics.confusion_matrix(y_test, y_pred)
