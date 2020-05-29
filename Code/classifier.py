@@ -5,6 +5,7 @@ from sklearn import preprocessing
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
 from imblearn.over_sampling import SMOTE
@@ -20,6 +21,7 @@ sns.set(style='whitegrid', color_codes=True)
 CLASSIFIER_LOGISTIC_REGRESSION = 'LogisticRegression'
 CLASSIFIER_SVM = 'SVM'
 CLASSIFIER_RF = 'RandomForest'
+CLASSIFIER_NB = 'NaiveBayesian'
 
 """
 We implement a basic logistic regression classifier to distinguish tweets
@@ -46,6 +48,7 @@ FIT_NEW_MODEL = True
 CLASSIFIER_TYPE = CLASSIFIER_LOGISTIC_REGRESSION
 # CLASSIFIER_TYPE = CLASSIFIER_SVM
 # CLASSIFIER_TYPE = CLASSIFIER_RF
+# CLASSIFIER_TYPE = CLASSIFIER_NB
 
 
 if __name__ == "__main__":
@@ -104,6 +107,9 @@ if __name__ == "__main__":
 
         elif CLASSIFIER_TYPE == CLASSIFIER_RF:
             model = RandomForestClassifier()
+
+        elif CLASSIFIER_TYPE == CLASSIFIER_NB:
+            model = GaussianNB()
 
         model.fit(X_train, y_train)
 
