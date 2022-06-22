@@ -1,4 +1,4 @@
-numpy==1.15.4
+numpy==1.22.0
 matplotlib==3.0.2
 imbalanced_learn==0.6.2
 seaborn==0.9.0
